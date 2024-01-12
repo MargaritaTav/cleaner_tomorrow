@@ -1,0 +1,19 @@
+<h2>Here are your reccomendations for {{region}}</h2>
+
+<p>{{result.message}}</p>
+<p>{{result.forecast_result}}</p>
+
+
+<h2>If you want to get daily report on this data to your provided email please click the button below</h2>
+
+<form method="POST" action="/email">
+    
+
+    <input type="text" name="region" value="{{region}}"/>
+    
+
+    <button type="submit">Get daily data for {{region}}</button>
+</form>
+
+<h2><a href="/cancel/{{region}}">Stop an existing daily mailing for this region</a></h2>
+
