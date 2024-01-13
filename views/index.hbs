@@ -1,4 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Cleaner Tomorrow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
 
-<h2>Welcome to your new way of low energy life-style</h2>
+        .control-area-btn {
+            background-color: #4caf50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
 
-<p>Please register or login with your account credentials</p>
+        .control-area-btn:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+<body class="bg-cover bg-no-repeat bg-center" style="background-image: url('https://www.falconenergy.co.uk/wp-content/uploads/2023/02/wind-turbines-1.png');">
+    <div class="container mx-auto px-4">
+        <div class="text-white text-center py-24">
+            <h1 class="text-5xl font-bold mb-4">Welcome to a Cleaner Tomorrow!</h1>
+            <p class="text-xl mb-8">Join us to Reduce CO2 Emissions</p>
+            <h2 class="text-3xl font-bold mb-5">What is your control area?</h2>
+            <div>
+                <button class="control-area-btn" onclick="saveControlArea('Amprion')">Amprion</button>
+                <button class="control-area-btn" onclick="saveControlArea('50Hertz')">50Hertz</button>
+                <button class="control-area-btn" onclick="saveControlArea('TenneT')">TenneT</button>
+                <button class="control-area-btn" onclick="saveControlArea('TransnetBW')">TransnetBW</button>
+            </div>
+            <div id="regionResult" class="text-white text-center mt-4"></div> <!-- Element to display the result -->
+            <div class="text-center mt-8">
+                <p>If you would like to subscribe to our daily email notifications or make changes to your profile, please:</p>
+                <a href="/signup" class="bg-transparent border-2 border-white text-white font-bold rounded-lg text-lg px-6 py-2 mr-6 hover:bg-white hover:text-gray-800 transition-colors duration-300">Sign Up</a>
+                <a href="/login" class="bg-transparent border-2 border-white text-white font-bold rounded-lg text-lg px-6 py-2 hover:bg-white hover:text-gray-800 transition-colors duration-300">Login</a>
+        </div>
+    </div>
+
+    <script>
+        function saveControlArea(region) {
+            // Save to session storage
+            sessionStorage.setItem('selectedRegion', region);
+
+            // Fetch data from your server
+            fetch(`/fetch-region-data/${region}`)
+    .then(response => response.json())
+    .then(data => {
+        const regionResultElement = document.getElementById('regionResult');
+        regionResultElement.innerHTML = ''; // Clear the existing content
+
+        const forecastDetails = document.createElement('pre');
+        forecastDetails.textContent = data.forecast_result;
+        regionResultElement.appendChild(forecastDetails);
+    })
+    .catch(error => console.error('Error:', error));
+
+
+
+        }
+    </script>
+</body>
+</html>
