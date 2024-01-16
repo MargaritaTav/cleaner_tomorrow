@@ -1,0 +1,59 @@
+body {
+   font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+   color: #00b7ff;
+}
+
+h1 {
+   color: 15px;
+}
+
+.control-area-btn {
+   background-color: #4caf50; /* Green */
+   border: none;
+   color: white;
+   padding: 10px 20px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 16px;
+   margin: 4px 2px;
+   transition-duration: 0.4s;
+   cursor: pointer;
+}
+
+.control-area-btn:hover {
+   background-color: white;
+   color: black;
+}
+
+.background-image {
+   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://www.falconenergy.co.uk/wp-content/uploads/2023/02/wind-turbines-1.png");
+   background-attachment: fixed; /* This line will keep the gradient fixed while scrolling */
+ }
+ 
+
+.svg-map {
+   height: 50vh;
+   transition: opacity 0.5s ease-in-out;
+}
+
+.path-link {
+   text-decoration: none;
+   cursor: pointer;
+}
+
+.hidden {
+   visibility: hidden;
+}
+
+.region-result p {
+   font-size: 20px;
+   width: 60vw;
+}
+
+.region-result h1 {
+   font-size: 32px;
+}
