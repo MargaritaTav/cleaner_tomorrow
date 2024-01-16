@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+
 </head>
 <body class="bg-cover bg-no-repeat bg-center background-image">
 
@@ -144,9 +145,9 @@
                 </div>
                 <div id="regionResult" class="region-result text-white text-center mt-4 space-y-5"></div> <!-- Element to display the result -->
                 <div id="subscribeControls" class="text-center mt-8 hidden h-2/5">
-                    <p class="m-3">If you would like to subscribe to our daily email notifications or make changes to your profile, please:</p>
-                    <form id="emailSubscriptionForm" class="px-5">
-                        <input type="email" id="emailInput" class="mx-3 bg-transparent border-2 border-white text-white font-bold rounded-lg text-lg px-6 py-2 hover:bg-white hover:text-gray-800 transition-colors duration-300" placeholder="Enter your email">
+                    <p class="m-3">Please leave your email below to subscribe to our daily recommendations</p>
+                    <form method="POST" action="" id="emailSubscriptionForm" class="px-5">
+                         <input name="email" type="email" id="emailInput" class="mx-3 bg-transparent border-2 border-white text-white font-bold rounded-lg text-lg px-6 py-2 hover:bg-white hover:text-gray-800 transition-colors duration-300" placeholder="Enter your email">
                         <button type="submit" class="bg-black text-white font-bold rounded-lg text-lg px-6 py-2 hover:bg-gray-800 transition-colors duration-300">Submit</button>
                     </form>
                 </div>
@@ -154,46 +155,85 @@
     </div>
 
     <script>
-        function saveControlArea(region) {
-            // Save to session storage
-            sessionStorage.setItem('selectedRegion', region);
+    function saveControlArea(region) {
+        // Save to session storage
+        sessionStorage.setItem('selectedRegion', region);
 
-            // Fetch data from your server
-            fetch(`/fetch-region-data/${region}`)
-    .then(response => response.json())
-    .then(data => {
-        const region = sessionStorage.getItem('selectedRegion');
-        const controlsToHide = document.querySelectorAll('.controls-to-hide');
-        const regionResultElement = document.getElementById('regionResult');
-        const subscribeControls = document.getElementById('subscribeControls');
-        const regionResultElementTitle = document.getElementById('regionResultTitle');
+        // Prepare data for the POST request
+        const postData = {
+            region: region,
+        };
 
-        // toggle visibility
-        controlsToHide.forEach(el => {
-            el.classList.toggle('hidden', data)
+        fetch(`/region-data/${region}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const controlsToHide = document.querySelectorAll('.controls-to-hide');
+            const regionResultElement = document.getElementById('regionResult');
+            const subscribeControls = document.getElementById('subscribeControls');
+            const regionResultElementTitle = document.getElementById('regionResultTitle');
+
+            // toggle visibility based on data availability
+            controlsToHide.forEach(el => el.classList.toggle('hidden', !data));
+            subscribeControls.classList.toggle('hidden', !data);
+            regionResultElement.innerHTML = ''; // Clear the existing content
+
+            // append h1 element
+            const regionDetails = document.createElement('h1');
+            regionDetails.textContent = "Your region is: " + region;
+            regionResultElement.appendChild(regionDetails);
+
+            // append p element with dynamic data
+           // ... existing code ...
+
+// ... existing code ...
+
+if (data) {
+    // Split the forecast result into parts
+    const forecastParts = data.forecast_result.split('We recommend to avoid using electricity in the following time frame/s:');
+    const recommendedTimes = forecastParts[0].replace('To avoid carbon emissions, we recommend using electricity in the following time frame/s:', '').trim();
+    const avoidTimes = forecastParts.length > 1 ? forecastParts[1].trim() : '';
+
+    // Construct the new message
+    let newMessage = 'To reduce carbon emissions, ';
+    if (recommendedTimes) {
+        newMessage += 'we recommend using electricity from ' + recommendedTimes;
+    }
+    if (avoidTimes) {
+        newMessage += (recommendedTimes ? ' and ' : '') + 'avoid it from ' + avoidTimes;
+    }
+
+    // Create an element for the new message
+    const forecastElement = document.createElement('p');
+    forecastElement.textContent = newMessage;
+    regionResultElement.appendChild(forecastElement);
+} else {
+    regionResultElement.innerHTML = '<p>No data available for this region.</p>';
+}
+
+// ... remaining code ...
+
+
+// ... remaining code ...
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('regionResult').innerHTML = '<p>Error fetching data.</p>';
         });
-        subscribeControls.classList.toggle('hidden', !data);
-        regionResultElement.innerHTML = ''; // Clear the existing content
-
-        // append h1 element
-        const regionDetails = document.createElement('h1');
-        regionDetails.textContent = "Your region is: " + region;
-        regionResultElement.appendChild(regionDetails);
-
-        // append p element
-        const forecastDetails = document.createElement('p');
-        forecastDetails.textContent = data.forecast_result;
-        regionResultElement.appendChild(forecastDetails);
-    })
-    .catch(error => console.error('Error:', error));
-        }
+    }
 
     document.getElementById('emailSubscriptionForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const emailInputValue = document.getElementById('emailInput').value;
         // email subscription logic ...
         document.getElementById('subscribeControls').innerHTML = '<p class="m-3">Thank you for subscribing!</p>';
-});
-    </script>
+    });
+</script>
 </body>
 </html>
