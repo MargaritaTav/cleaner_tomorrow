@@ -74,7 +74,7 @@ app.post('/region-data/:region', async (req, res) => {
     const region = req.params.region;
     try {
         console.log(req.body);
-        await fetchAndSaveMultipleRegions([region]);  // Pass the region as an array
+        
 
         // Retrieve the latest saved data for the region
         const latestData = await RegionData.findOne({ region }).sort({ createdAt: -1 });
@@ -93,27 +93,8 @@ app.post('/region-data/:region', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-// Subscription route to handle email subscriptions
-app.post('/subscribe', async (req, res) => {
-    const { email, region } = req.body;
-    try {
-        // Logic to save or update the subscription in the database
-        const existingSubscription = await Subscription.findOne({ email, region });
-        if (existingSubscription) {
-            // Update existing subscription if necessary
-            console.log(`Subscription already exists for ${email} in ${region}`);
-        } else {
-            // Create a new subscription
-            const newSubscription = new Subscription({ email, region });
-            await newSubscription.save();
-            console.log(`New subscription created for ${email} in ${region}`);
-        }
-        res.status(200).send('Subscription successful');
-    } catch (error) {
-        console.error('Subscription error:', error);
-        res.status(500).send('Error processing subscription');
-    }
-});
+
+
 // 👇 Start handling routes here
 const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);

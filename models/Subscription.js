@@ -7,4 +7,9 @@ const subscriptionSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+const Subscription = mongoose.model('Subscription', subscriptionSchema); // Correct the casing of regiondataSchema
+
 module.exports = mongoose.model('Subscription', subscriptionSchema);
+
+
