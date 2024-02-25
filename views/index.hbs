@@ -150,11 +150,11 @@
                          <input name="email" type="email" id="emailInput" class="mx-3 bg-transparent border-2 border-white text-white font-bold rounded-lg text-lg px-6 py-2 hover:bg-white hover:text-gray-800 transition-colors duration-300" placeholder="Enter your email">
                         <button type="submit" class="bg-black text-white font-bold rounded-lg text-lg px-6 py-2 hover:bg-gray-800 transition-colors duration-300">Submit</button>
                     </form>
-                </div>
-            </div>
+         <div id="subscribeControls" class="mt-4"></div>
     </div>
+</div>
 
-    <script>
+   <script>
     function saveControlArea(region) {
         // Save to session storage
         sessionStorage.setItem('selectedRegion', region);
@@ -164,6 +164,7 @@
             region: region,
         };
 
+        // Fetch region data and update UI accordingly
         fetch(`/region-data/${region}`, {
             method: 'POST',
             headers: {
@@ -176,51 +177,25 @@
             const controlsToHide = document.querySelectorAll('.controls-to-hide');
             const regionResultElement = document.getElementById('regionResult');
             const subscribeControls = document.getElementById('subscribeControls');
-            const regionResultElementTitle = document.getElementById('regionResultTitle');
 
-            // toggle visibility based on data availability
+            // Toggle visibility based on data availability
             controlsToHide.forEach(el => el.classList.toggle('hidden', !data));
             subscribeControls.classList.toggle('hidden', !data);
             regionResultElement.innerHTML = ''; // Clear the existing content
 
-            // append h1 element
+            // Append h1 element for region details
             const regionDetails = document.createElement('h1');
             regionDetails.textContent = "Your region is: " + region;
             regionResultElement.appendChild(regionDetails);
 
-            // append p element with dynamic data
-           // ... existing code ...
-
-// ... existing code ...
-
-if (data) {
-    // Split the forecast result into parts
-    const forecastParts = data.forecast_result.split('We recommend to avoid using electricity in the following time frame/s:');
-    const recommendedTimes = forecastParts[0].replace('To avoid carbon emissions, we recommend using electricity in the following time frame/s:', '').trim();
-    const avoidTimes = forecastParts.length > 1 ? forecastParts[1].trim() : '';
-
-    // Construct the new message
-    let newMessage = 'To reduce carbon emissions, ';
-    if (recommendedTimes) {
-        newMessage += 'we recommend using electricity from ' + recommendedTimes;
-    }
-    if (avoidTimes) {
-        newMessage += (recommendedTimes ? ' and ' : '') + 'avoid it from ' + avoidTimes;
-    }
-
-    // Create an element for the new message
-    const forecastElement = document.createElement('p');
-    forecastElement.textContent = newMessage;
-    regionResultElement.appendChild(forecastElement);
-} else {
-    regionResultElement.innerHTML = '<p>No data available for this region.</p>';
-}
-
-// ... remaining code ...
-
-
-// ... remaining code ...
-
+            // Append p element with dynamic data if available
+            if (data && data.forecast_result) {
+                const forecastElement = document.createElement('p');
+                forecastElement.textContent = `Forecast result: ${data.forecast_result}`;
+                regionResultElement.appendChild(forecastElement);
+            } else {
+                regionResultElement.innerHTML = '<p>No data available for this region.</p>';
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -229,11 +204,30 @@ if (data) {
     }
 
     document.getElementById('emailSubscriptionForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const emailInputValue = document.getElementById('emailInput').value;
-        // email subscription logic ...
+    event.preventDefault();
+    const emailInputValue = document.getElementById('emailInput').value;
+    const region = sessionStorage.getItem('selectedRegion') || 'default'; // Fallback to a default value or handle as needed
+
+    // Assume a backend endpoint /subscribe for email subscriptions
+    fetch('/subscribe', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: emailInputValue, region }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            // If response status code is not OK, throw an error with the status text
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
         document.getElementById('subscribeControls').innerHTML = '<p class="m-3">Thank you for subscribing!</p>';
+        //return response.json(); // This is a Promise
+    })
+    .catch(error => {
+        console.error('Subscription error:', error);
+        // Update the HTML to show a more descriptive error message
+        document.getElementById('subscribeControls').innerHTML = `<p class="m-3">Error processing subscription. Details: ${error.message}</p>`;
     });
+});
 </script>
-</body>
-</html>
