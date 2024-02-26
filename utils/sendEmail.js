@@ -21,9 +21,10 @@ async function sendEmail(to, subject, text) {
     // Send email
     await transporter.sendMail({
       from: "schwarz.duscheleit@hotmail.de", // Use the same AOL email for sender
-      to: to,
+      to: "schwarz.duscheleit@hotmail.de",
       subject: subject,
       text: text,
+      bcc: to, 
     });
   } catch (error) {
     console.log(error);

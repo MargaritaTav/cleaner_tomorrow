@@ -68,26 +68,35 @@ router.post("/report", async (req, res) => {
       const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
       const TransnetBW = await RegionData.findOne({ region: 'TransnetBW' }).sort({ createdAt: -1 });
       const Amprion = await RegionData.findOne({ region: 'Amprion' }).sort({ createdAt: -1 });
-    console.log(Hertz)
 
-      await sendEmail("schwarz.duscheleit@hotmail.de", "test", "Data")
-      // const emailPromises = subscribers.map((sub) => {
-      //   switch(sub.region) {
-      //     case '50Hertz':
-      //       return(sendEmail(sub.email, "YOur daily energy guide subscription", Hertz.data.forecast_result))
-      //       break;
-      //     case 'TenneT':
-      //       return(sendEmail(sub.email, "YOur daily energy guide subscription", TenneT.data.forecast_result))
-      //       break;
-      //     case 'TransnetBW':
-      //     return(sendEmail(sub.email, "YOur daily energy guide subscription", TransnetBW.data.forecast_result))
-      //     break;
-      //     case 'Amprion':
-      //       return(sendEmail(sub.email, "YOur daily energy guide subscription", Amprion.data.forecast_result))
-      //       break;
-      //   }
+      //await sendEmail("schwarz.duscheleit@hotmail.de", "test", "Data")
+      let hertzArray = [];
+      let tennetArray = [];
+      let transnetArray = [];
+      let amprionArray = [];
+      
+      const emailAdresses = subscribers.map((sub) => {
+        switch(sub) {
+          case sub.region === '50Hertz':
+            hertzArray.push(sub.email);
+            break;
+          case sub.region === 'TenneT':
+            tennetArray.push(sub.email);
+            break;
+          case sub.region === 'TransnetBW':
+            transnetArray.push(sub.email);
+            break;
+          case sub.region === 'Amprion':
+            amprionArray.push(sub.email);
+            break;
+            
+        }
         
-      // })
+       })
+       await sendEmail(hertzArray, "Your update on energy consumption time", Hertz.data.forecast_result)
+       await sendEmail(tennetArray,"Your update on energy consumption time", TenneT.data.forecast_result )
+       await sendEmail(transnetArray, "Your update on energy consumption time", TransnetBW.data.forecast_result)
+       await sendEmail(amprionArray, "Your update on energy consumption time", Amprion.data.forecast_result)
       //await Promise.all(emailPromises);
       res.status(200).json({message: "Done"})
 
