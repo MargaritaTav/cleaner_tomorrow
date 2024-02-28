@@ -29,10 +29,22 @@ const MongoStore = require("connect-mongo");
 const MONGO_URI =
   process.env.MONGODB_URI || "mongodb+srv://margaritatikis:TYrXP1APksnXfjg0@infsystems.xuftu5t.mongodb.net/infsystems";
 
+const cors = require("cors");
+
+const FRONTEND_URL = process.env.ORIGIN || "http://localhost:3000";
+
 // Middleware configuration
 module.exports = (app) => {
+
+  // controls a very specific header to pass headers from the frontend
+  app.use(
+    cors({
+      origin: [FRONTEND_URL],
+    })
+  );
   // In development environment the app logs
   app.use(logger("dev"));
+
 
   // To have access to `body` property in the request
   app.use(express.json());

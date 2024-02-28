@@ -57,6 +57,7 @@ async function fetchAndSaveMultipleRegions(regions) {
     }
 }
 
+
 // Manual test route for data fetching and saving
 app.get('/test-fetch', async (req, res) => {
     console.log('Manual test fetch initiated at', new Date());
