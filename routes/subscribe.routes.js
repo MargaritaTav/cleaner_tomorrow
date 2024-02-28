@@ -59,7 +59,7 @@ router.post("/report", async (req, res) => {
   const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
   try {
       // update data in database
-      await fetchAndSaveMultipleRegions(regions);
+      //await fetchAndSaveMultipleRegions(regions);
       console.log('All regions processed');
       
       // send email with updated data to all subscribers
