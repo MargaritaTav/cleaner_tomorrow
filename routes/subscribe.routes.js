@@ -115,10 +115,10 @@ try {
 
   
     const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
-    const responseHertz = await axios.post(url, '50Hertz' ); 
-    const responseTenneT = await axios.post(url, 'TenneT' ); 
-    const responseTransnetBW = await axios.post(url, 'TransnetBW' ); 
-    const responseTAmprion = await axios.post(url, 'Amprion' ); 
+    const responseHertz = await axios.post(url, {'50Hertz': '50Hertz'}); 
+    const responseTenneT = await axios.post(url, {'TenneT': 'TenneT'} ); 
+    const responseTransnetBW = await axios.post(url, {'TransnetBW': 'TransnetBW'}); 
+    const responseTAmprion = await axios.post(url, {'Amprion': 'Amprion'}); 
 
     const newData = await RegionData.create({region: regions[0], data: responseHertz})
     const newData2 = await RegionData.create({region: regions[1], data: responseTenneT})
