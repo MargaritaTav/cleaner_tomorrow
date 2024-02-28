@@ -13,6 +13,7 @@ const hbs = require("hbs");
 const cron = require('node-cron');
 const axios = require('axios');
 const RegionData = require('./models/RegionData'); // Adjust the path as needed
+const Subscription = require('./models/Subscription')
 
 const app = express();
 
@@ -23,62 +24,57 @@ const capitalize = require("./utils/capitalize");
 const projectName = "information";
 app.locals.appTitle = `${capitalize(projectName)}`;
 
-// Function to fetch and save data for a region
-// Function to fetch and save data for a region using POST request
-// Function to fetch and save data for a region using POST request
-// ...
-
-// Helper function to fetch and save data for a region using POST request
-// Define an array of regions once
-// Define the async function
 // Define an array of regions
+const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
+
+// Schedule the cron job to run once a day at 3 AM
+cron.schedule('19 12 * * *', async () => {
+    console.log('Cron job started at', new Date());
+    try {
+        await fetchAndSaveMultipleRegions(regions);
+        console.log('All regions processed');
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
+    console.log('Cron job finished at', new Date());
+});
+
+// Function to fetch and save data for multiple regions
 async function fetchAndSaveMultipleRegions(regions) {
+    console.log('Fetching and saving data for regions:', regions);
     try {
         for (const region of regions) {
-            const url = `https://europe-west3-engaged-card-410714.cloudfunctions.net/function-6`;
+            const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
             const response = await axios.post(url, { region });  // Pass the region in the request body
             const newData = new RegionData({ region, data: response.data });
             await newData.save();
             console.log('Data saved successfully for region:', region);
         }
+        console.log('Data fetching and saving completed for all requested regions.');
     } catch (error) {
-        console.error('Error fetching/saving data:', error);
+        console.error('An error occurred during fetch and save:', error);
+        throw error;  // Rethrow the error to handle it in the calling function
     }
 }
 
-
-// Define an array of regions
-const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
-
-// Call the function with the array of regions
-fetchAndSaveMultipleRegions(regions)
-    .then(() => console.log('All regions processed'))
-    .catch(error => console.error('An error occurred:', error));
-
-
-
-
-
-// Schedule the cron job to run at a specific time
-// Schedule the cron job to run at a specific time
-cron.schedule('47 17 * * *', async () => {
-    console.log('Cron job started at', new Date());
-    await fetchAndSaveMultipleRegions(regions); // Call the function to fetch and save data for all regions
-    console.log('Cron job finished at', new Date());
+// Manual test route for data fetching and saving
+app.get('/test-fetch', async (req, res) => {
+    console.log('Manual test fetch initiated at', new Date());
+    try {
+        await fetchAndSaveMultipleRegions(regions);
+        res.send('Data fetching and saving initiated successfully.');
+    } catch (error) {
+        console.error('Error during test fetch:', error);
+        res.status(500).send('Error during test fetch.');
+    }
 });
 
-
-
-
-
-
-// Route to fetch data for a specific region using POST
 // Route to fetch data for a specific region using POST
 app.post('/region-data/:region', async (req, res) => {
+    const region = req.params.region;
     try {
-        console.log(req.body)
-        const region = req.params.region;
-        await fetchAndSaveMultipleRegions([region]);  // Pass the region as an array
+        console.log(req.body);
+        
 
         // Retrieve the latest saved data for the region
         const latestData = await RegionData.findOne({ region }).sort({ createdAt: -1 });
@@ -99,14 +95,12 @@ app.post('/region-data/:region', async (req, res) => {
 });
 
 
-
-
 // 👇 Start handling routes here
 const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);
 
-//const authRoutes = require("./routes/auth.routes");
-//app.use("/auth", authRoutes);
+const subscribeRoutes = require('./routes/subscribe.routes'); // Adjust the path as needed
+app.use('/', subscribeRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
