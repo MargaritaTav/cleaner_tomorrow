@@ -60,8 +60,7 @@ router.post("/report", async (req, res) => {
   const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
   try {
       // update data in database
-      //await fetchAndSaveMultipleRegions(regions);
-      console.log('All regions processed');
+     
       
       // send email with updated data to all subscribers
       const subscribers  = await Subscription.find();
@@ -108,15 +107,39 @@ router.post("/report", async (req, res) => {
   }
 })
 
+router.post("/dataupdate", async (req, res) => {
+  
+  
+  const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
+try {
+
+  
+    const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
+    const responseHertz = await axios.post(url, '50Hertz' ); 
+    const responseTenneT = await axios.post(url, 'TenneT' ); 
+    const responseTransnetBW = await axios.post(url, 'TransnetBW' ); 
+    const responseTAmprion = await axios.post(url, 'Amprion' ); 
+
+    const newData = await RegionData.create({region: regions[0], data: responseHertz})
+    const newData2 = await RegionData.create({region: regions[1], data: responseTenneT})
+    const newData3 = await RegionData.create({region: regions[2], data: responseTransnetBW})
+    const newData4 = await RegionData.create({region: regions[3], data: responseTAmprion})
+
+
+
+    
+    
+    
+      console.log("Data saved successfully");
+    
+
+  
+} catch (error) {
+  console.log(error)
+}
+  
+})
+
 module.exports = router;
 
 
-// // Retrieve the latest saved data for the region
-// const latestData = await RegionData.findOne({ region }).sort({ createdAt: -1 });
-
-// if (!latestData) {
-//     return res.status(404).send('No data found for the specified region');
-// }
-
-// // Extract forecast_result from the nested "data" object
-// const forecastResult = latestData.data.forecast_result;
