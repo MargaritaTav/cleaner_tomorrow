@@ -55,6 +55,7 @@ router.post('/subscribe', async (req, res) => {
 });
 
 router.post("/report", async (req, res) => {
+  res.json({ message: "Scheduled task started!" });
   // Define an array of regions
   const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
   try {
@@ -100,7 +101,7 @@ router.post("/report", async (req, res) => {
        await sendEmail(transnetArray, "Your update on energy consumption time", TransnetBW.data.forecast_result)
        await sendEmail(amprionArray, "Your update on energy consumption time", Amprion.data.forecast_result)
       //await Promise.all(emailPromises);
-      res.status(200).json({message: "Done"})
+      
 
   } catch (error) {
     console.log(error)
