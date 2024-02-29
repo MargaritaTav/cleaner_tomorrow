@@ -3,6 +3,8 @@ const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const { google } = require('googleapis');
 const MailComposer = require('nodemailer/lib/mail-composer');
+const RegionData = require('../models/RegionData'); // Adjust the path as needed
+const Subscription = require("../models/Subscription");
 
 
 const CLIENT_ID = "972999227282-0udhmoe36buggg8folg8tj7kgr8aavo1.apps.googleusercontent.com";
@@ -53,23 +55,10 @@ router.get("/sendmail", async (req, res) => {
     const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
     client.setCredentials(tokens);
 
-    async function sendEmail() {
+    async function sendEmail(options) {
         
         const gmail = google.gmail({ version: 'v1', auth: client });
-        const options = {
-            to: 'margaritatikis@gmail.com',
-            cc: '',
-            replyTo: '',
-            subject: 'Hello Energy SAVER',
-            text: 'This email is sent from Future Tomorrow',
-            html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> onoptimal energy consumption.</p>`,
-            
-            textEncoding: 'base64',
-            headers: [
-              { key: 'X-Application-Developer', value: 'Amit Agarwal' },
-              { key: 'X-Application-Version', value: 'v1.0.0.2' },
-            ],
-          };
+        
         try {
 
             const encodeMessage = (message) => {
@@ -120,7 +109,89 @@ router.get("/sendmail", async (req, res) => {
       }
     
     try {
-        await sendEmail()
+      // send email with updated data to all subscribers
+      const subscribers  = await Subscription.find();
+
+
+      const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });
+      const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
+      const TransnetBW = await RegionData.findOne({ region: 'TransnetBW' }).sort({ createdAt: -1 });
+      const Amprion = await RegionData.findOne({ region: 'Amprion' }).sort({ createdAt: -1 });
+      console.log(Hertz)
+      //await sendEmail("schwarz.duscheleit@hotmail.de", "test", "Data")
+      let hertzArray = [];
+      let tennetArray = [];
+      let transnetArray = [];
+      let amprionArray = [];
+      
+      const emailAdresses = subscribers.map((sub) => {
+        switch(sub) {
+          case sub.region === '50Hertz':
+            hertzArray.push(sub.email);
+            break;
+          case sub.region === 'TenneT':
+            tennetArray.push(sub.email);
+            break;
+          case sub.region === 'TransnetBW':
+            transnetArray.push(sub.email);
+            break;
+          case sub.region === 'Amprion':
+            amprionArray.push(sub.email);
+            break;
+            
+        }
+       });
+       const emailOptionsArray = [
+        {
+          to: 'margaritatikis@gmail.com',
+          bcc: hertzArray,
+          subject: 'Hello Energy SAVER - 50Hertz',
+          text: "blabla",
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for 50Hertz. ${Hertz.data.forecast_result}</p>`,
+          // ... other options
+        },
+        {
+          to: 'margaritatikis@gmail.com',
+          bcc: tennetArray,
+          subject: 'Hello Energy SAVER - TenneT',
+          text: "blabla",
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${TenneT.data.forecast_result}</p>`,
+          // ... other options
+        },
+        {
+          to: 'margaritatikis@gmail.com',
+          bcc: transnetArray,
+          subject: 'Hello Energy SAVER - TenneT',
+          text: "blabla",
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${TransnetBW.data.forecast_result}</p>`,
+          // ... other options
+        },
+        {
+          to: 'margaritatikis@gmail.com',
+          bcc: amprionArray,
+          subject: 'Hello Energy SAVER - TenneT',
+          text: "blabla",
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${Amprion.data.forecast_result}</p>`,
+          // ... other options
+        }
+      ]
+      //  const options = {
+      //   to: 'margaritatikis@gmail.com',
+      //   cc: '',
+      //   replyTo: '',
+      //   subject: 'Hello Energy SAVER',
+      //   text: 'This email is sent from Future Tomorrow',
+      //   html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> onoptimal energy consumption.</p>`,
+        
+      //   textEncoding: 'base64',
+      //   headers: [
+      //     { key: 'X-Application-Developer', value: 'Amit Agarwal' },
+      //     { key: 'X-Application-Version', value: 'v1.0.0.2' },
+      //   ],
+      // };
+      for (const options of emailOptionsArray) {
+        await sendEmail(options);
+      }
         res.status(200).json({message: "Email send successfully"})
     } catch (error) {
         console.log(error)

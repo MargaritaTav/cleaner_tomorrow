@@ -54,58 +54,6 @@ router.post('/subscribe', async (req, res) => {
     }
 });
 
-router.post("/report", async (req, res) => {
-  res.json({ message: "Scheduled task started!" });
-  // Define an array of regions
-  const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
-  try {
-      // update data in database
-     
-      
-      // send email with updated data to all subscribers
-      const subscribers  = await Subscription.find();
-
-
-      const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });
-      const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
-      const TransnetBW = await RegionData.findOne({ region: 'TransnetBW' }).sort({ createdAt: -1 });
-      const Amprion = await RegionData.findOne({ region: 'Amprion' }).sort({ createdAt: -1 });
-
-      //await sendEmail("schwarz.duscheleit@hotmail.de", "test", "Data")
-      let hertzArray = [];
-      let tennetArray = [];
-      let transnetArray = [];
-      let amprionArray = [];
-      
-      const emailAdresses = subscribers.map((sub) => {
-        switch(sub) {
-          case sub.region === '50Hertz':
-            hertzArray.push(sub.email);
-            break;
-          case sub.region === 'TenneT':
-            tennetArray.push(sub.email);
-            break;
-          case sub.region === 'TransnetBW':
-            transnetArray.push(sub.email);
-            break;
-          case sub.region === 'Amprion':
-            amprionArray.push(sub.email);
-            break;
-            
-        }
-        
-       })
-       await sendEmail(hertzArray, "Your update on energy consumption time", Hertz.data.forecast_result)
-       await sendEmail(tennetArray,"Your update on energy consumption time", TenneT.data.forecast_result )
-       await sendEmail(transnetArray, "Your update on energy consumption time", TransnetBW.data.forecast_result)
-       await sendEmail(amprionArray, "Your update on energy consumption time", Amprion.data.forecast_result)
-      //await Promise.all(emailPromises);
-      
-
-  } catch (error) {
-    console.log(error)
-  }
-})
 
 router.post("/dataupdate", async (req, res) => {
   res.status(200).json({message: "Data update in progress"})
@@ -114,21 +62,6 @@ router.post("/dataupdate", async (req, res) => {
 try {
 
     fetchAndSaveMultipleRegions(regions)
-    // const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
-    // const responseHertz = await axios.post(url, {"50Hertz": '50Hertz'}); 
-    // const responseTenneT = await axios.post(url, {'TenneT': 'TenneT'} ); 
-    // const responseTransnetBW = await axios.post(url, {'TransnetBW': 'TransnetBW'}); 
-    // const responseTAmprion = await axios.post(url, {'Amprion': 'Amprion'}); 
-
-    // const newData = await RegionData.create({region: regions[0], data: responseHertz})
-    // const newData2 = await RegionData.create({region: regions[1], data: responseTenneT})
-    // const newData3 = await RegionData.create({region: regions[2], data: responseTransnetBW})
-    // const newData4 = await RegionData.create({region: regions[3], data: responseTAmprion})
-
-
-
-    
-    
     
       console.log("Data saved successfully");
     
