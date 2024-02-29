@@ -108,22 +108,22 @@ router.post("/report", async (req, res) => {
 })
 
 router.post("/dataupdate", async (req, res) => {
-  
+  res.status(200).json({message: "Data update in progress"})
   
   const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
 try {
 
-  
-    const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
-    const responseHertz = await axios.post(url, {'50Hertz': '50Hertz'}); 
-    const responseTenneT = await axios.post(url, {'TenneT': 'TenneT'} ); 
-    const responseTransnetBW = await axios.post(url, {'TransnetBW': 'TransnetBW'}); 
-    const responseTAmprion = await axios.post(url, {'Amprion': 'Amprion'}); 
+    fetchAndSaveMultipleRegions(regions)
+    // const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
+    // const responseHertz = await axios.post(url, {"50Hertz": '50Hertz'}); 
+    // const responseTenneT = await axios.post(url, {'TenneT': 'TenneT'} ); 
+    // const responseTransnetBW = await axios.post(url, {'TransnetBW': 'TransnetBW'}); 
+    // const responseTAmprion = await axios.post(url, {'Amprion': 'Amprion'}); 
 
-    const newData = await RegionData.create({region: regions[0], data: responseHertz})
-    const newData2 = await RegionData.create({region: regions[1], data: responseTenneT})
-    const newData3 = await RegionData.create({region: regions[2], data: responseTransnetBW})
-    const newData4 = await RegionData.create({region: regions[3], data: responseTAmprion})
+    // const newData = await RegionData.create({region: regions[0], data: responseHertz})
+    // const newData2 = await RegionData.create({region: regions[1], data: responseTenneT})
+    // const newData3 = await RegionData.create({region: regions[2], data: responseTransnetBW})
+    // const newData4 = await RegionData.create({region: regions[3], data: responseTAmprion})
 
 
 
