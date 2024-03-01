@@ -1,4 +1,6 @@
 const express = require('express');
+const axios = require('axios');
+
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const { google } = require('googleapis');
@@ -135,7 +137,7 @@ router.get("/sendmail", async (req, res) => {
     try {
       // send email with updated data to all subscribers
       
-      fetchAndSaveMultipleRegions(regions)
+      await fetchAndSaveMultipleRegions(regions)
 
       const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });
       const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
