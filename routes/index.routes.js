@@ -7,9 +7,9 @@ const RegionData = require('../models/RegionData'); // Adjust the path as needed
 const Subscription = require("../models/Subscription");
 
 
-const CLIENT_ID = "972999227282-0udhmoe36buggg8folg8tj7kgr8aavo1.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
-const REDIRECT_URI = 'http://localhost:3000/callback';
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 const SCOPES = 'https://www.googleapis.com/auth/gmail.send';
 
 
@@ -44,15 +44,16 @@ router.get('/callback', async (req, res) => {
 });
 
 router.get("/sendmail", async (req, res) => {
+    res.status(200).json({message: "Email sending in progress"})
     const tokens = {
         access_token: 'ya29.a0AfB_byDUT1UlrBLuD4XX0a5hUn7TakZylfOd5hsFCiAVik6oTKYUW0-Z-Q4Jd3K9H-Nt_4lQpg-8pgoAyDq-0UYqI5w-aLjhxsrLWXC-6oaElMmSfPohh3wq843IzVqyGnxUB1X2FhzS2HAL3eMVKhrNfUsqpjbhUTHTaCgYKASISARMSFQHGX2MiDhEY9n6SEHC4iONYXdhacw0171',
-        refresh_token: '1//09haEwkWecKaTCgYIARAAGAkSNwF-L9IrQRj6DV5uhehPD0s-8BY364dz3Of26J_lHpiVb0dUq-p2qIZgCPTsZLxMIxYiKqje5gw',
+        refresh_token: process.env.REFRESH_TOKEN,
         scope: 'https://www.googleapis.com/auth/gmail.send',
         token_type: 'Bearer',
         expiry_date: 1709221674501
         // other properties like token_type, expiry_date, etc., may also be present
       };
-    const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+    const client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
     client.setCredentials(tokens);
 
     async function sendEmail(options) {
@@ -192,7 +193,7 @@ router.get("/sendmail", async (req, res) => {
       for (const options of emailOptionsArray) {
         await sendEmail(options);
       }
-        res.status(200).json({message: "Email send successfully"})
+        
     } catch (error) {
         console.log(error)
     }
