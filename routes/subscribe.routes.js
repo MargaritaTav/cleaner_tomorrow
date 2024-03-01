@@ -5,9 +5,6 @@ const RegionData = require('../models/RegionData'); // Adjust the path as needed
 const Subscription = require("../models/Subscription");
 
 
-// Corrected the path to the Subscription model
-const sendEmail = require('../utils/sendEmail'); // Ensure the path to sendEmail is also correct
-
 
 async function fetchAndSaveMultipleRegions(regions) {
   console.log('Fetching and saving data for regions:', regions);

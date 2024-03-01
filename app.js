@@ -27,17 +27,7 @@ app.locals.appTitle = `${capitalize(projectName)}`;
 // Define an array of regions
 const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
 
-// Schedule the cron job to run once a day at 3 AM
-cron.schedule('19 12 * * *', async () => {
-    console.log('Cron job started at', new Date());
-    try {
-        await fetchAndSaveMultipleRegions(regions);
-        console.log('All regions processed');
-    } catch (error) {
-        console.error('An error occurred:', error);
-    }
-    console.log('Cron job finished at', new Date());
-});
+
 
 // Function to fetch and save data for multiple regions
 async function fetchAndSaveMultipleRegions(regions) {
