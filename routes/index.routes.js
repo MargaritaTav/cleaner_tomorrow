@@ -12,6 +12,27 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const SCOPES = 'https://www.googleapis.com/auth/gmail.send';
 
+async function fetchAndSaveMultipleRegions(regions) {
+  console.log('Fetching and saving data for regions:', regions);
+  try {
+      for (const region of regions) {
+          const url = `https://us-central1-engaged-card-410714.cloudfunctions.net/new-function`;
+          const response = await axios.post(url, { region });  // Pass the region in the request body
+          // only create new when not empty
+          console.log(response.data.forecast_result.length)
+          if (response.data.forecast_result.length !== 0) {
+          // here comes the code to check if dat ais not empty
+            const newData = new RegionData({ region, data: response.data });
+            await newData.save();
+            console.log('Data saved successfully for region:', region);
+          }
+      }
+      console.log('Data fetching and saving completed for all requested regions.');
+  } catch (error) {
+      console.error('An error occurred during fetch and save:', error);
+      throw error;  // Rethrow the error to handle it in the calling function
+  }
+}
 
 router.get("/", (req, res) => {
     res.render("index")
@@ -45,6 +66,8 @@ router.get('/callback', async (req, res) => {
 
 router.get("/sendmail", async (req, res) => {
     res.status(200).json({message: "Email sending in progress"})
+    const regions = ['50Hertz', 'TenneT', 'TransnetBW', 'Amprion'];
+
     const tokens = {
         access_token: 'ya29.a0AfB_byDUT1UlrBLuD4XX0a5hUn7TakZylfOd5hsFCiAVik6oTKYUW0-Z-Q4Jd3K9H-Nt_4lQpg-8pgoAyDq-0UYqI5w-aLjhxsrLWXC-6oaElMmSfPohh3wq843IzVqyGnxUB1X2FhzS2HAL3eMVKhrNfUsqpjbhUTHTaCgYKASISARMSFQHGX2MiDhEY9n6SEHC4iONYXdhacw0171',
         refresh_token: process.env.REFRESH_TOKEN,
@@ -112,7 +135,7 @@ router.get("/sendmail", async (req, res) => {
     try {
       // send email with updated data to all subscribers
       
-      
+      fetchAndSaveMultipleRegions(regions)
 
       const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });
       const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
