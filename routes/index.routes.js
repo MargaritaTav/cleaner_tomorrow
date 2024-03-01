@@ -111,13 +111,15 @@ router.get("/sendmail", async (req, res) => {
     
     try {
       // send email with updated data to all subscribers
-      const subscribers  = await Subscription.find();
-      console.log(subscribers);
+      
+      
 
       const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });
       const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
       const TransnetBW = await RegionData.findOne({ region: 'TransnetBW' }).sort({ createdAt: -1 });
       const Amprion = await RegionData.findOne({ region: 'Amprion' }).sort({ createdAt: -1 });
+
+      const subscribers  = await Subscription.find();
       console.log(Hertz)
       //await sendEmail("schwarz.duscheleit@hotmail.de", "test", "Data")
       let hertzArray = [];
