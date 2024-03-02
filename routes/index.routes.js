@@ -16,23 +16,6 @@ const SCOPES = 'https://www.googleapis.com/auth/gmail.send';
 
 
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect("mongodb+srv://margaritatikis:TYrXP1APksnXfjg0@infsystems.xuftu5t.mongodb.net/infsystems");
-        console.log('Connected to MongoDB!');
-    } catch (error) {
-        console.error('Connection error:', error);
-    }
-};
-
-const performDatabaseOperation = async () => {
-    if (mongoose.connection.readyState !== 1) {
-        console.log('Reconnecting to MongoDB...');
-        await connectDB();
-    }
-  }
-
-
 
 async function fetchAndSaveMultipleRegions(regions) {
   console.log('Fetching and saving data for regions:', regions);
@@ -156,9 +139,11 @@ router.get("/sendmail", async (req, res) => {
     
     try {
       // send email with updated data to all subscribers
-      await performDatabaseOperation();
       await fetchAndSaveMultipleRegions(regions)
-
+        
+    } catch (error) {
+        console.log(error)
+    } finally {
       const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });
       const TenneT = await RegionData.findOne({ region: 'TenneT' }).sort({ createdAt: -1 });
       const TransnetBW = await RegionData.findOne({ region: 'TransnetBW' }).sort({ createdAt: -1 });
@@ -239,11 +224,12 @@ router.get("/sendmail", async (req, res) => {
       //   ],
       // };
       for (const options of emailOptionsArray) {
-        await sendEmail(options);
-      }
-        
-    } catch (error) {
-        console.log(error)
+        try {
+          await sendEmail(options);
+        } catch (error) {
+          console.error(`Error sending email: ${error}`);
+          // Handle the error for email sending if needed
+        }
     }
 })
 
