@@ -231,6 +231,7 @@ router.get("/sendmail", async (req, res) => {
           // Handle the error for email sending if needed
         }
     }
+  }
 })
 
 module.exports = router;
