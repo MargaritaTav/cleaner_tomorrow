@@ -51,8 +51,8 @@ async function fetchAndSaveMultipleRegions(regions) {
       }
       console.log('Data fetching and saving completed for all requested regions.');
   } catch (error) {
-      console.error('An error occurred during fetch and save:', error);
-      throw error;  // Rethrow the error to handle it in the calling function
+      console.log('An error occurred during fetch and save:', error);
+     
   }
 }
 
