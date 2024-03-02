@@ -177,7 +177,7 @@ router.get("/sendmail", async (req, res) => {
        console.log(hertzArray)
        const emailOptionsArray = [
         {
-          to: 'margaritatikis@gmail.com',
+          to: 'energyguideforecast@gmail.com',
           cc: hertzArray,
           subject: 'Hello Energy SAVER - 50Hertz',
           text: "blabla",
@@ -185,7 +185,7 @@ router.get("/sendmail", async (req, res) => {
           // ... other options
         },
         {
-          to: 'margaritatikis@gmail.com',
+          to: 'energyguideforecast@gmail.com',
           cc: tennetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
@@ -193,7 +193,7 @@ router.get("/sendmail", async (req, res) => {
           // ... other options
         },
         {
-          to: 'margaritatikis@gmail.com',
+          to: 'energyguideforecast@gmail.com',
           cc: transnetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
@@ -201,7 +201,7 @@ router.get("/sendmail", async (req, res) => {
           // ... other options
         },
         {
-          to: 'margaritatikis@gmail.com',
+          to: 'energyguideforecast@gmail.com',
           cc: amprionArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
