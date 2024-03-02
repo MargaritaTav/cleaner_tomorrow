@@ -173,17 +173,17 @@ router.get("/sendmail", async (req, res) => {
       let amprionArray = [];
       
       const emailAdresses = subscribers.map((sub) => {
-        switch(sub) {
-          case sub.region === '50Hertz':
+        switch(sub.region) {
+          case '50Hertz':
             hertzArray.push(sub.email);
             break;
-          case sub.region === 'TenneT':
+          case 'TenneT':
             tennetArray.push(sub.email);
             break;
-          case sub.region === 'TransnetBW':
+          case 'TransnetBW':
             transnetArray.push(sub.email);
             break;
-          case sub.region === 'Amprion':
+          case 'Amprion':
             amprionArray.push(sub.email);
             break;
             
@@ -211,7 +211,7 @@ router.get("/sendmail", async (req, res) => {
           bcc: transnetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
-          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${TransnetBW.data.forecast_result}</p>`,
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TransnetBW.${TransnetBW.data.forecast_result}</p>`,
           // ... other options
         },
         {
@@ -219,7 +219,7 @@ router.get("/sendmail", async (req, res) => {
           bcc: amprionArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
-          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${Amprion.data.forecast_result}</p>`,
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for Amprion.${Amprion.data.forecast_result}</p>`,
           // ... other options
         }
       ]
