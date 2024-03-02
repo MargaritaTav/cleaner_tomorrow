@@ -189,10 +189,11 @@ router.get("/sendmail", async (req, res) => {
             
         }
        });
+       console.log(hertzArray)
        const emailOptionsArray = [
         {
           to: 'margaritatikis@gmail.com',
-          bcc: hertzArray,
+          cc: hertzArray,
           subject: 'Hello Energy SAVER - 50Hertz',
           text: "blabla",
           html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for 50Hertz. ${Hertz.data.forecast_result}</p>`,
@@ -200,7 +201,7 @@ router.get("/sendmail", async (req, res) => {
         },
         {
           to: 'margaritatikis@gmail.com',
-          bcc: tennetArray,
+          cc: tennetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
           html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${TenneT.data.forecast_result}</p>`,
@@ -208,7 +209,7 @@ router.get("/sendmail", async (req, res) => {
         },
         {
           to: 'margaritatikis@gmail.com',
-          bcc: transnetArray,
+          cc: transnetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
           html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TransnetBW.${TransnetBW.data.forecast_result}</p>`,
@@ -216,7 +217,7 @@ router.get("/sendmail", async (req, res) => {
         },
         {
           to: 'margaritatikis@gmail.com',
-          bcc: amprionArray,
+          cc: amprionArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
           html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for Amprion.${Amprion.data.forecast_result}</p>`,
