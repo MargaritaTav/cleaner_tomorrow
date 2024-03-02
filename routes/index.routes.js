@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-
+const mongoose = require('mongoose');
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const { google } = require('googleapis');
@@ -13,6 +13,26 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const SCOPES = 'https://www.googleapis.com/auth/gmail.send';
+
+
+
+const connectDB = async () => {
+    try {
+        await mongoose.connect("mongodb+srv://margaritatikis:TYrXP1APksnXfjg0@infsystems.xuftu5t.mongodb.net/infsystems");
+        console.log('Connected to MongoDB!');
+    } catch (error) {
+        console.error('Connection error:', error);
+    }
+};
+
+const performDatabaseOperation = async () => {
+    if (mongoose.connection.readyState !== 1) {
+        console.log('Reconnecting to MongoDB...');
+        await connectDB();
+    }
+  }
+
+
 
 async function fetchAndSaveMultipleRegions(regions) {
   console.log('Fetching and saving data for regions:', regions);
@@ -136,7 +156,7 @@ router.get("/sendmail", async (req, res) => {
     
     try {
       // send email with updated data to all subscribers
-      
+      await performDatabaseOperation();
       await fetchAndSaveMultipleRegions(regions)
 
       const Hertz = await RegionData.findOne({ region: '50Hertz' }).sort({ createdAt: -1 });

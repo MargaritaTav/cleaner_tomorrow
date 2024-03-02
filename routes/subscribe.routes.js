@@ -41,7 +41,6 @@ router.post('/subscribe', async (req, res) => {
             const newSubscription = new Subscription({ email, region });
             await newSubscription.save();
             // Send confirmation email
-            await sendEmail(email, 'Subscription Confirmation', `You've subscribed successfully to receive daily forecasts for ${region}.`);
             console.log(`New subscription created for ${email} in ${region}`);
         }
         res.status(200).send('Subscription successful');
