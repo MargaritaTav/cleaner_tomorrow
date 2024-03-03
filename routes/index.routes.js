@@ -41,7 +41,11 @@ async function fetchAndSaveMultipleRegions(regions) {
 
 router.get("/", (req, res) => {
     res.render("index")
-})
+});
+
+router.get("/about", (req, res) => {
+  res.render("about")
+});
 
 const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 

@@ -9,11 +9,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
 
 </head>
-<body class="bg-cover bg-no-repeat bg-center background-image">
+
+<body class="bg-cover bg-no-repeat bg-center background-image flex flex-col justify-center items-center">
+    <nav class=" text-white">
+    <a class="ml-10" id="hlink">Home</a>
+    <a class="ml-10" id="alink">About</a>
+  </nav>
 
     <!-- TODO: move control to hbs partials, move script to separate script file. -->
 
-    <div class="h-full container mx-auto px-4">
+    <div class="h-full container mx-auto px-4" id="home" style="display: block;">
         <div class="h-full text-white flex items-center flex-col pt-12">
             <h1 class="text-5xl font-bold mb-4">Welcome to a Cleaner Tomorrow!</h1>
             <p class="text-xl mb-8">Join us to Reduce CO2 Emissions</p>
@@ -153,6 +158,12 @@
          <div id="subscribeControls" class="mt-4"></div>
     </div>
 </div>
+</div>
+</div>
+<div class="h-full flex justify-center items-center text-white " id="about" style="display: none;" >
+    <p class="m-20">Here you can read some intersting information about the project!</p>
+</div>
+</body>
 
    <script>
     function saveControlArea(region) {
@@ -230,4 +241,15 @@
         document.getElementById('subscribeControls').innerHTML = `<p class="m-3">Error processing subscription. Details: ${error.message}</p>`;
     });
 });
+document.getElementById("hlink").addEventListener("click", () => {
+    document.getElementById("home").style.display = "block";
+    document.getElementById("about").style.display = "none";
+
+})
+document.getElementById("alink").addEventListener("click", () => {
+    document.getElementById("about").style.display = "block";
+    document.getElementById("home").style.display = "none";
+
+})
+
 </script>
