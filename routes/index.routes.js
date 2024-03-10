@@ -49,7 +49,8 @@ async function fetchAndSaveMultipleRegions(regions) {
 }
 
 router.get("/", (req, res) => {
-  res.render("index");
+  const currentDate = new Date().toLocaleDateString();
+  res.render("index", { currentDate });
 });
 
 router.get("/about", (req, res) => {
