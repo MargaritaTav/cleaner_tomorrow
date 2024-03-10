@@ -178,14 +178,14 @@ router.get("/sendmail", async (req, res) => {
             
         }
        });
-       console.log(hertzArray)
+       const currentDate = new Date().toLocaleDateString();
        const emailOptionsArray = [
         {
           to: 'energyguideforecast@gmail.com',
           cc: hertzArray,
           subject: 'Hello Energy SAVER - 50Hertz',
           text: "blabla",
-          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for 50Hertz. ${Hertz.data.forecast_result}</p>`,
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for 50Hertz for ${currentDate}. ${Hertz.data.forecast_result}</p>`,
           // ... other options
         },
         {
@@ -193,7 +193,7 @@ router.get("/sendmail", async (req, res) => {
           cc: tennetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
-          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT.${TenneT.data.forecast_result}</p>`,
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TenneT for ${currentDate}.${TenneT.data.forecast_result}</p>`,
           // ... other options
         },
         {
@@ -201,7 +201,7 @@ router.get("/sendmail", async (req, res) => {
           cc: transnetArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
-          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TransnetBW.${TransnetBW.data.forecast_result}</p>`,
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for TransnetBW for ${currentDate}.${TransnetBW.data.forecast_result}</p>`,
           // ... other options
         },
         {
@@ -209,7 +209,7 @@ router.get("/sendmail", async (req, res) => {
           cc: amprionArray,
           subject: 'Hello Energy SAVER - TenneT',
           text: "blabla",
-          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for Amprion.${Amprion.data.forecast_result}</p>`,
+          html: `<p>🙋🏻‍♀️  &mdash; This is a <b>report</b> on optimal energy consumption for Amprion for ${currentDate}.${Amprion.data.forecast_result}</p>`,
           // ... other options
         }
       ]
