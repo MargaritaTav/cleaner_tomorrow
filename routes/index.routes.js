@@ -7,6 +7,8 @@ const { google } = require("googleapis");
 const MailComposer = require("nodemailer/lib/mail-composer");
 const RegionData = require("../models/RegionData"); // Adjust the path as needed
 const Subscription = require("../models/Subscription");
+const emailjs = require("@emailjs/browser");
+
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -15,9 +17,8 @@ const SCOPES = "https://www.googleapis.com/auth/gmail.send";
 
 async function refreshAccessToken(client) {
   try {
-    
     const { tokens } = await client.refreshToken(process.env.REFRESH_TOKEN);
-    
+
     return tokens;
     // Call your function to send an email using the new access token
   } catch (error) {
@@ -140,7 +141,10 @@ router.get("/sendmail", async (req, res) => {
       console.error("Error sending email:", error.message);
 
       // Check if the error is due to an expired access token
-      if (error.message.includes("invalid_grant") || error.message.includes("Invalid Credentials")) {
+      if (
+        error.message.includes("invalid_grant") ||
+        error.message.includes("Invalid Credentials")
+      ) {
         console.log("Access token expired. Refreshing and retrying...");
         let newAuthClient = new OAuth2Client(
           process.env.CLIENT_ID,
@@ -149,7 +153,7 @@ router.get("/sendmail", async (req, res) => {
         );
         const newTokens = await refreshAccessToken(newAuthClient);
 
-        console.log(newTokens)
+        console.log(newTokens);
         process.env.ACCESS_TOKEN = newTokens.access_token;
         process.env.EXP_DATE = newTokens.expiry_date;
         tokens = {
@@ -276,27 +280,102 @@ router.get("/sendmail", async (req, res) => {
   }
 });
 
-router.get("/refresh", (req, res) => {
+router.get("/refresh", async (req, res) => {
   try {
-    async function refreshAccessToken() {
-      try {
-        let client = new OAuth2Client(
-          process.env.CLIENT_ID,
-          process.env.CLIENT_SECRET,
-          process.env.REDIRECT_URI
-        );
-        const { tokens } = await client.refreshToken(process.env.REFRESH_TOKEN);
-        console.log(tokens);
-        const newRefreshToken = tokens.refresh_token;
-        process.env.REFRESH_TOKEN = newRefreshToken;
-        // Call your function to send an email using the new access token
-      } catch (error) {
-        console.error("Error refreshing refresh token:", error.message);
-      }
-    }
-    refreshAccessToken();
+    let client = new OAuth2Client(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      process.env.REDIRECT_URI
+    );
+
+    const tokens = await refreshAccessToken(client);
+    console.log(tokens);
+    res.json({ message: "New Token" });
   } catch (error) {
     console.log(error);
   }
 });
+
+router.get("/emailjs", async (req, res) => {
+  try {
+    const regions = ["50Hertz", "TenneT", "TransnetBW", "Amprion"];
+    await fetchAndSaveMultipleRegions(regions);
+    const Hertz = await RegionData.findOne({ region: "50Hertz" }).sort({
+      createdAt: -1,
+    });
+    const TenneT = await RegionData.findOne({ region: "TenneT" }).sort({
+      createdAt: -1,
+    });
+    const TransnetBW = await RegionData.findOne({ region: "TransnetBW" }).sort({
+      createdAt: -1,
+    });
+    const Amprion = await RegionData.findOne({ region: "Amprion" }).sort({
+      createdAt: -1,
+    });
+
+    const subscribers = await Subscription.find();
+    console.log(Hertz);
+    //await sendEmail("schwarz.duscheleit@hotmail.de", "test", "Data")
+    let hertzArray = [];
+    let tennetArray = [];
+    let transnetArray = [];
+    let amprionArray = [];
+
+    const emailAdresses = subscribers.map((sub) => {
+      switch (sub.region) {
+        case "50Hertz":
+          hertzArray.push(sub.email);
+          break;
+        case "TenneT":
+          tennetArray.push(sub.email);
+          break;
+        case "TransnetBW":
+          transnetArray.push(sub.email);
+          break;
+        case "Amprion":
+          amprionArray.push(sub.email);
+          break;
+      }
+    });
+    const currentDate = new Date().toLocaleDateString();
+
+    const hertzbccEmails = hertzArray.join(",");
+    const tennetbccEmails = tennetArray.join(",");
+    const transnetbccEmails = transnetArray.join(",");
+    const amprionbccEmails = amprionArray.join(",");
+
+    // Construct the email message object
+    const hertzMessage = {
+      to_email: "schwarz.duscheleit@hotmail.de",
+      bcc: hertzbccEmails, // Add CC email addresses here
+      subject: "Hello Energy SAVER - 50Hertz",
+      message: Hertz.data.forecast_result,
+    };
+    const tennetMessage = {
+      to_email: "schwarz.duscheleit@hotmail.de",
+      bcc: tennetbccEmails, // Add CC email addresses here
+      subject: "Hello Energy SAVER - 50Hertz",
+      message: Hertz.data.forecast_result,
+    };
+    const transnetMessage = {
+      to_email: "schwarz.duscheleit@hotmail.de",
+      bcc: transnetbccEmails, // Add CC email addresses here
+      subject: "Hello Energy SAVER - 50Hertz",
+      message: Hertz.data.forecast_result,
+    };
+    const amprionMessage = {
+      to_email: "schwarz.duscheleit@hotmail.de",
+      bcc: amprionbccEmails, // Add CC email addresses here
+      subject: "Hello Energy SAVER - 50Hertz",
+      message: Hertz.data.forecast_result,
+    };
+
+
+   
+    res.json({messages: [hertzMessage, tennetMessage, transnetMessage, amprionMessage]})
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
