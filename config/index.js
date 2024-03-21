@@ -31,7 +31,7 @@ const MONGO_URI =
 
 const cors = require("cors");
 
-const FRONTEND_URL = process.env.ORIGIN || "http://localhost:5173" || "http://localhost:5173";
+const FRONTEND_URL = process.env.ORIGIN || "http://localhost:3000";
 
 // Middleware configuration
 module.exports = (app) => {
