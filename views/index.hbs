@@ -24,6 +24,7 @@
             <p class="text-xl mb-8">Join us to Reduce CO2 Emissions</p>
             <div class="h-full flex items-center justify-center flex-col">
                 <h2 class="text-3xl font-bold mb-5 controls-to-hide">What is your control area?</h2>
+                <h2 class="text-3xl font-bold mb-5 controls-to-hide">Forecast for {{ currentDate }}:</h2>
                 <svg
                     id="control-map"
                     class="svg-map controls-to-hide"
@@ -160,8 +161,35 @@
 </div>
 </div>
 </div>
-<div class="h-full flex flex-col items-center text-white " id="about" style="display: none;" >
-    <p class="mt-20">Here you can read some intersting information about the project!</p>
+<div class="flex flex-row justify-center items-center text-white font-bold" id="about" style="display: none;" >
+    <div class="flex flex-col justify-center items-center">
+    <p class="mt-10 w-1/2 text-center">CO2 emissions are the primary driver of global climate change, 
+        and with the increasing demand for electricity, 
+        the need for sustainable practices is more crucial than ever. 
+        By actively lowering your CO2 emissions, you become a part of the solution, 
+        paving the way for a greener and healthier tomorrow. </p>
+        <p class="mt-10 w-1/2 text-center">
+            With our Energy Guide, we empower you to make a positive impact easily. 
+            Discover the optimal times for environmentally friendly energy generation in your area, 
+            and with small adjustments to your daily routine, 
+            contribute to a significant positive change for the environment. 
+        </p>
+        <p class="mt-10 w-1/2 text-center">
+            Here is how it works: </br>
+Choose your control area in the graphic below to receive the recommendation specific to your region. 
+Whether it's charging your electric car, running your washing machine, dryer, or other appliances, 
+simply shift the usage to coincide with high renewable energy generation in your control area. 
+        </p>
+         <p class="mt-10 w-1/2 text-center">
+            Data 
+Our recommendation algorithm analyzes real-time data of wind and solar generation from the 
+<a href="https://www.smard.de/en" target="_blank">German Federal Network Agency</a> to provide you with regional recommendations.  
+        </p>
+        <p class="mt-10 w-1/2 text-center mb-10">
+            You can also stay effortlessly informed by subscribing to receive your daily recommendations via email. 
+            Enter your email address below and be a part of the movement towards a cleaner, greener future. 
+        </p>
+        </div>
 </div>
 </body>
 
