@@ -31,7 +31,7 @@ const MONGO_URI =
 
 const cors = require("cors");
 
-const FRONTEND_URL = process.env.ORIGIN || "http://localhost:3000";
+const FRONTEND_URL = process.env.ORIGIN || "https://cool-cat-7adbbd.netlify.app";
 
 // Middleware configuration
 module.exports = (app) => {
