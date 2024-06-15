@@ -27,7 +27,7 @@ async function fetchAndSaveMultipleRegions(regions) {
       "Data fetching and saving completed for all requested regions."
     );
   } catch (error) {
-    console.log("An error occurred during fetch and save:", error);
+    throw error;
   }
 }
 
@@ -114,6 +114,7 @@ router.get("/emailjs", async (req, res) => {
     });
 
     const hertzbccEmails = hertzArray.join(",");
+
     const tennetbccEmails = tennetArray.join(",");
     const transnetbccEmails = transnetArray.join(",");
     const amprionbccEmails = amprionArray.join(",");
